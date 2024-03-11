@@ -1,0 +1,27 @@
+version: "3"
+services:
+  api_tracing:
+    container_name: api_tracing
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "80:5000"
+    tty: true
+    env_file:
+      - .env
+
+  zipkin:
+    image: openzipkin/zipkin
+    container_name: zipkin
+    tty: true
+    ports:
+      - "9411:9411"
+
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+      - COLLECTOR_ZIPKIN_HTTP_PORT=9411
+    ports:
+      - "16686:16686"
